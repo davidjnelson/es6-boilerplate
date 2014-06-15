@@ -10,8 +10,4 @@ describe('something', function() {
   it('should work', function() {
     expect(something.sum(1, 2)).toBe(3);
   });
-
-  xit('should fail', function() {
-    something.sum(1, 'invalid');
-  });
 });

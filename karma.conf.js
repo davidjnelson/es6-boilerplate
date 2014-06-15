@@ -12,7 +12,7 @@ module.exports = function(config) {
       {pattern: 'src/**/*.js', included: false},
       {pattern: 'test/**/*.js', included: false},
 
-      {pattern: 'node_modules/assert/dist/amd/**/*.js', included: false}
+      {pattern: 'node_modules/rtts-assert/dist/amd/**/*.js', included: false}
     ],
 
     preprocessors: {
