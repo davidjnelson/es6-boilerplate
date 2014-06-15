@@ -1,5 +1,5 @@
-import {Something} from './something';
+import {Person} from './model/Person';
 
-var s = new Something();
+var person = new Person('firstName', 'lastName');
 
-console.log('1 + 2 is ', s.sum(1, 2));
+console.log('person\'s name is: ' + person.fullName);
