@@ -1,70 +1,135 @@
-## ES6++ playground
+## es6-boilerplate
 
-This is an empty repo to make it easy to experiment with [ES6]. It also includes some additional features, such as annotations and run-time type checks. It is basically the setup we use on Angular v2, so you can check out some of the v2 repos such as [di.js], [templating] or [diary.js].
+ES6 Boilerplate allows you to use features from the next version of javascript (es6) today, and transpile them to the
+current version of javascript (es5) so they run in all browsers.  ES6 modules, AMD modules and global scripts
+and libraries all work together, and can be easily built, concatentated, minified, and gzipped along with source
+maps to allow you to debug in production while delivering high performance to your users.
+
+ES6 Boilerplate is based off of Vojta Jina's fantastic es6-playground project, which he says is the same his team
+at google is using to develop AngularJS version 2.0.
 
 
 ### Initial setup
 
 ```bash
 # Clone the repo...
-git clone https://github.com/vojtajina/es6-playground.git
-cd es6-playground
+git clone https://github.com/davidjnelson/es6-boilerplate.git
+cd es6-boilerplate
 
 # Then, you need to install all the dependencies...
 npm install
-
-# If you wanna be able to use global commands `karma` and `gulp`...
-npm install -g karma-cli
-npm install -g gulp
-```
-
+bower install
 
 ### Running the tests
 ```bash
 karma start
 ```
 
-
 ### Running in the browser
 ```bash
 gulp build
 gulp serve
 
-# If you wanna Gulp to re-build on every change...
+# If you want Gulp to re-build on every change...
 gulp watch
 ```
 
+### How to load legacy libraries and code from amd modules or from browser globals?
+If you have an amd or browser global module, add it to src/runtime-config.js under the paths object.  If it needs to
+export a global, add it to the shim object, specifying the module name and the global name it exports.  Whether it's
+an amd module or a shimmed browser global, add it to the require call at the bottom of runtime-config.js so that
+the build process sees it and concatenates it.
 
-### WTF is ES6?
+In the following example, the traceur runtime exports a global through the shim, and jquery is loaded as an amd module:
+```
+require.config({
+    paths: {
+        assert: '../node_modules/rtts-assert/dist/amd/assert',
+        traceur: '../bower_components/traceur-runtime/traceur-runtime',
+        jquery: '../bower_components/jquery/dist/jquery'
+    },
+    // put any non amd or es6 module code that needs to run first here
+    shim: {
+        'traceur': {
+            exports: '$traceurRuntime'
+        }
+    }
+});
+
+// load traceur runtime before entry point
+require(['traceur', 'jquery'], function() {
+
+});
+```
+
+### How to use es6 modules?
+To use es6 modules, simple add new files anywhere under the src directory.  The syntax for exporting a module looks like this:
+
+```
+class Person {
+    constructor(firstName, lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    get fullName() {
+        return this.firstName + ' ' + this.lastName;
+    }
+}
+export {Person}
+```
+
+And the syntax for importing a module looks like this:
+
+```
+import {Person} from '../../src/model/Person'
+
+var person;
+
+describe('Person', function() {
+    beforeEach(function() {
+        person = new Person('firstName', 'lastName');
+    });
+
+    it('should return the first and last name', function() {
+        expect(person.fullName).toEqual('firstName lastName');
+    })
+});
+```
+
+### Where can I learn more about the sweet new es6 features that I can use with this tool?
 Simply, the next version of JavaScript that contains some really cool features. You might check out some of these:
 
-- https://wiki.mozilla.org/ES6_plans
-- http://globaldev.co.uk/2013/09/es6-part-1/
-- http://code.tutsplus.com/tutorials/eight-cool-features-coming-in-es6--net-33175
-
+- Here are all the es6 features supported by traceur: https://github.com/google/traceur-compiler/wiki/LanguageFeatures
+- Checkout the 'Bonus Round: Promises and Generators' from this article on promises to see how easy new es6 features
+it to work with asynchronous code: http://www.html5rocks.com/en/tutorials/es6/promises
 
 ### What are all the pieces involved?
 
 #### [Traceur]
-Transpiles ES6 code into regular ES5 (today's JavaScript) so that it can be run in a today browser.
+Transpiles ES6 code into regular ES5 (today's JavaScript) so that it can be run in today's browser.
 
 #### [RequireJS]
-Traceur is configured to transpile ES6 modules into AMD syntax and we use RequireJS to load the code in the browser.
+RequireJS is used to load libraries which are AMD modules or browser globals, so that they can be concatenated into
+a single file.
 
 #### [Assert] library
-When `typeAssertions: true` option is used, Traceur generates run-time type assertions such as `assert.type(x, Object)`. The assert library does the actual run-time check. Of course, you can use your own assert library.
+When `typeAssertions: true` option is used, Traceur generates run-time type assertions such as `assert.type(x, Object)`.
+The assert library does the actual run-time check. Of course, you can use your own assert library.
 
-The idea with type assertions is that you only use them during the development/testing and when deploying, you use `typeAssertions: false`.
+The idea with type assertions is that you only use them during the development/testing and when deploying, you use
+`typeAssertions: false`.
 
 #### [Karma]
-Test runner that runs the tests in specified browsers, everytime you change a file.
+Test runner that runs the tests in specified browsers, every time you change a file.
 
 #### [Gulp]
 Task runner to make defining and running the tasks simpler.
 
 
-### And what the hell is the ++?
-When developing Angular v2, we are using some additional features that are not in the ES6 specs...
+### Metadata and Type Annotation support
+Vojta mentions that when developing Angular v2, the angular team is using
+some additional features that are not in the ES6 specs.
 
 #### 1/ meta data annotations
 ```js
@@ -76,7 +141,8 @@ class Foo {
   constructor(@AnotherAnnotation bar) {}
 }
 ```
-This is a very similar syntax to annotations in Java/Dart. It is just a nice declarative way to put additional meta data on classes/functions/parameters.
+This is a very similar syntax to annotations in Java. It is just a nice declarative way to put additional meta data
+on classes/functions/parameters.
 
 When `annotations: true`, Traceur transpiles the above code code into something like this:
 ```js
@@ -118,16 +184,22 @@ function request(url, data, callback) {
 }
 ```
 
-
-[di.js]: https://github.com/angular/di.js
-[templating]: https://github.com/angular/templating
-[diary.js]: https://github.com/angular/diary.js
-
-[ES6]: http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts
-
 [Traceur]: https://github.com/google/traceur-compiler
 [RequireJS]: http://requirejs.org
 [Assert]: https://github.com/angular/assert
 [Karma]: http://karma-runner.github.io/
 [Gulp]: http://gulpjs.com
-[TypeScript]: escriptlang.org
+
+### Current Issues
+
+- Sometimes when a breakpoint is set in a source in the chrome developer tools via the source maps, the tab
+does not appear for that source from the map.  You have to click on the file name on the right hand side of the
+developer tools ui under the section called 'Call Stack'.  It's not a huge issue, but it would be nice to have fixed
+at some point.
+- Traceur doesn't support minifying the output file when generating source maps, so at present it concatenates all
+the es6 code but doesn't minify it.  This will be addressed soon.  Currently gulp doesn't support a minifier which
+can preserve an existing source map.  So a grunt plugin and a gulp to grunt bridge may be used in the interim.
+- At present, there isn't any tooling which easily can, or perhaps can at all, load amd or browser global modules
+from within an es6 module.  As a result, the built output does two http requests, one to get the minified file which
+contains legacy amd and browser global modules, and one which gets the minified file which contains es6 modules.  This
+isn't a huge deal to do 2 http requests instead of one.

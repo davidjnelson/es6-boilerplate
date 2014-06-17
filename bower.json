@@ -33,6 +33,7 @@
   "dependencies": {
     "angular": "~1.2.18",
     "traceur-runtime": "~0.0.44",
-    "almond": "~0.2.9"
+    "almond": "~0.2.9",
+    "jquery": "~2.1.1"
   }
 }

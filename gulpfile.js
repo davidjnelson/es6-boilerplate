@@ -8,35 +8,17 @@ var rename = require("gulp-rename");
 var es = require('event-stream');
 var shell = require('gulp-shell')
 
-gulp.task('clean', function(callback){
-    es.concat(
-        gulp.src('./transpiled/**/*.*')
-            .pipe(clean()),
-        gulp.src('./dist/**/*.*')
-            .pipe(clean())
-    ).on('end', callback);
+gulp.task('clean', function(){
+    gulp.src('./dist/**/*.*')
+        .pipe(clean());
 });
 
-gulp.task('transpile', ['clean'], function(callback) {
-
-  es.concat(
-      gulp.src(['src/**/*.js', '!src/runtime-config.js'])
-          .pipe(traceur(traceurOptions))
-          .pipe(gulp.dest('transpiled')),
-      gulp.src('src/runtime-config.js')
-          .pipe(gulp.dest('transpiled'))
-  ).on('end', callback);
-
-    //shell.task([
-    //    'node_modules/traceur/traceur --script src/main.js --out transpiled/transpiled-with-source-maps.js --sourcemap'
-    //]);
-
-});
+gulp.task('transpile', ['clean'], shell.task('node_modules/traceur/traceur --script src/main.js --out dist/transpiled-with-source-maps.js --sourcemap'));
 
 gulp.task('concatenate', ['transpile'], function() {
     requirejs.optimize({
-        baseUrl : 'transpiled',
-        mainConfigFile : 'transpiled/runtime-config.js',
+        baseUrl : 'src',
+        mainConfigFile : 'src/runtime-config.js',
         out : 'dist/build.js',
         include: ['traceur', 'runtime-config'],
         findNestedDependencies: true,
@@ -48,7 +30,7 @@ gulp.task('concatenate', ['transpile'], function() {
     });
 });
 
-gulp.task('build', ['clean', 'concatenate'/*, 'minify'*/], function() {
+gulp.task('build', ['clean', 'concatenate'], function() {
     gulp.src('index-production.html')
         .pipe(rename("index.html"))
         .pipe(gulp.dest('dist'));

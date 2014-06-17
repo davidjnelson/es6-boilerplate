@@ -34,7 +34,8 @@
     "gulp-requirejs": "~0.1.3",
     "gulp-closure-compiler": "~0.2.1",
     "closurecompiler": "~1.3.0",
-    "gulp-shell": "~0.2.5"
+    "gulp-shell": "~0.2.5",
+    "gulp-grunt": "~0.5.1"
   },
   "scripts": {
     "test": "karma start --single-run"
