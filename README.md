@@ -5,7 +5,7 @@ current version of javascript (es5) so they run in all browsers.  ES6 modules, A
 and libraries all work together, and can be easily built, concatentated, minified, and gzipped along with source
 maps to allow you to debug in production while delivering high performance to your users.
 
-ES6 Boilerplate is based off of Vojta Jina's fantastic es6-playground project, which he says is the same his team
+ES6 Boilerplate is based off of Vojta Jína's fantastic es6-playground project, which he says is the same his team
 at google is using to develop AngularJS version 2.0.
 
 
