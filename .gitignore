@@ -1,3 +1,6 @@
 node_modules
 compiled
 .idea
+transpiled
+dist
+bower_components

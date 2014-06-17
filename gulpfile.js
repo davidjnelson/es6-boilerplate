@@ -2,30 +2,62 @@ var gulp = require('gulp');
 var traceur = require('gulp-traceur');
 var traceurOptions = require('./config').traceur;
 var connect = require('gulp-connect');
-var rimraf = require('rimraf');
+var clean = require('gulp-clean');
+var requirejs   = require('requirejs');
+var rename = require("gulp-rename");
+var es = require('event-stream');
+var shell = require('gulp-shell')
 
-var path = {
-  src: './src/**/*.js'
-};
-
-// clean the output directory
-gulp.task('clean', function(cb){
-    rimraf('compiled/src', cb);
+gulp.task('clean', function(callback){
+    es.concat(
+        gulp.src('./transpiled/**/*.*')
+            .pipe(clean()),
+        gulp.src('./dist/**/*.*')
+            .pipe(clean())
+    ).on('end', callback);
 });
 
-// TRANSPILE ES6
-gulp.task('build', ['clean'], function() {
-  gulp.src(path.src)
-      .pipe(traceur(traceurOptions))
-      .pipe(gulp.dest('compiled/src'));
+gulp.task('transpile', ['clean'], function(callback) {
+
+  es.concat(
+      gulp.src(['src/**/*.js', '!src/runtime-config.js'])
+          .pipe(traceur(traceurOptions))
+          .pipe(gulp.dest('transpiled')),
+      gulp.src('src/runtime-config.js')
+          .pipe(gulp.dest('transpiled'))
+  ).on('end', callback);
+
+    //shell.task([
+    //    'node_modules/traceur/traceur --script src/main.js --out transpiled/transpiled-with-source-maps.js --sourcemap'
+    //]);
+
 });
 
-// WATCH FILES FOR CHANGES
+gulp.task('concatenate', ['transpile'], function() {
+    requirejs.optimize({
+        baseUrl : 'transpiled',
+        mainConfigFile : 'transpiled/runtime-config.js',
+        out : 'dist/build.js',
+        include: ['traceur', 'runtime-config'],
+        findNestedDependencies: true,
+        wrap: true,
+        name: '../bower_components/almond/almond',
+        generateSourceMaps: true,
+        optimize: 'uglify2',
+        preserveLicenseComments: false
+    });
+});
+
+gulp.task('build', ['clean', 'concatenate'/*, 'minify'*/], function() {
+    gulp.src('index-production.html')
+        .pipe(rename("index.html"))
+        .pipe(gulp.dest('dist'));
+});
+
 gulp.task('watch', function() {
-  gulp.watch(path.src, ['build']);
+  gulp.watch(path.src, ['transpile']);
 });
 
-// WEB SERVER
 gulp.task('serve', connect.server({
   root: [__dirname],
   port: 8000,
