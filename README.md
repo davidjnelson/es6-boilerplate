@@ -15,10 +15,13 @@ at google is using to develop AngularJS version 2.0.
 # Clone the repo...
 git clone https://github.com/davidjnelson/es6-boilerplate.git
 cd es6-boilerplate
+```
 
 # Then, you need to install all the dependencies...
+```bash
 npm install
 bower install
+```
 
 ### Running the tests
 ```bash
@@ -29,8 +32,10 @@ karma start
 ```bash
 gulp build
 gulp serve
+```
 
 # If you want Gulp to re-build on every change...
+```bash
 gulp watch
 ```
 
@@ -41,7 +46,7 @@ an amd module or a shimmed browser global, add it to the require call at the bot
 the build process sees it and concatenates it.
 
 In the following example, the traceur runtime exports a global through the shim, and jquery is loaded as an amd module:
-```
+```js
 require.config({
     paths: {
         assert: '../node_modules/rtts-assert/dist/amd/assert',
@@ -65,7 +70,7 @@ require(['traceur', 'jquery'], function() {
 ### How to use es6 modules?
 To use es6 modules, simple add new files anywhere under the src directory.  The syntax for exporting a module looks like this:
 
-```
+```js
 class Person {
     constructor(firstName, lastName) {
         this.firstName = firstName;
@@ -81,7 +86,7 @@ export {Person}
 
 And the syntax for importing a module looks like this:
 
-```
+```js
 import {Person} from '../../src/model/Person'
 
 var person;
@@ -98,8 +103,6 @@ describe('Person', function() {
 ```
 
 ### Where can I learn more about the sweet new es6 features that I can use with this tool?
-Simply, the next version of JavaScript that contains some really cool features. You might check out some of these:
-
 - Here are all the es6 features supported by traceur: https://github.com/google/traceur-compiler/wiki/LanguageFeatures
 - Checkout the 'Bonus Round: Promises and Generators' from this article on promises to see how easy new es6 features
 it to work with asynchronous code: http://www.html5rocks.com/en/tutorials/es6/promises
@@ -146,7 +149,6 @@ on classes/functions/parameters.
 
 When `annotations: true`, Traceur transpiles the above code code into something like this:
 ```js
-// ...
 
 Foo.annotations = [new SomeAnnotation];
 Foo.parameters = [[new AnotherAnnotation]];
