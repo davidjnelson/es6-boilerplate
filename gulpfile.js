@@ -24,8 +24,6 @@ gulp.task('concatenate', ['transpile'], function() {
         findNestedDependencies: true,
         wrap: true,
         name: '../bower_components/almond/almond',
-        generateSourceMaps: true,
-        optimize: 'uglify2',
         preserveLicenseComments: false
     });
 });
