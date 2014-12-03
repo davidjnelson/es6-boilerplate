@@ -6,7 +6,7 @@ var clean = require('gulp-clean');
 var requirejs   = require('requirejs');
 var rename = require("gulp-rename");
 var es = require('event-stream');
-var shell = require('gulp-shell')
+var shell = require('gulp-shell');
 
 gulp.task('clean', function(){
     gulp.src('./dist/**/*.*')
