@@ -8,12 +8,6 @@ maps to allow you to debug in production while delivering high performance to yo
 ES6 Boilerplate is based off of Vojta Jína's fantastic es6-playground project, which he says is the same his team
 at google is using to develop AngularJS version 2.0.
 
-Sponsored By
-------------
-
-[Copy the Shrug Emoji](https://copyshrugemoji.com)
-==================================================
-
 ### Initial setup
 
 ```bash
